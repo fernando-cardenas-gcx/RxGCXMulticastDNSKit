@@ -1,15 +1,17 @@
 name: Pull Request
 
 on:
+  push:
+    branches: master
   pull_request:
-    branches:
-      - master
+    types: [opened, reopened, ready_for_review, synchronize]
+    branches: master
       
 jobs:
   cancelPreviousRuns:
     name: Cancel previous runs
     if: github.event_name == 'push' || !github.event.pull_request.draft
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     steps:
       - name: Cancel previous runs
         uses: styfle/cancel-workflow-action@0.6.0
@@ -22,9 +24,6 @@ jobs:
     runs-on: macos-latest
     steps:
     - uses: actions/checkout@v2
-    - name: Build
-      run: swift build -v
-      timeout-minutes: 10
     - name: Run tests
       run: swift test -v
       timeout-minutes: 10
